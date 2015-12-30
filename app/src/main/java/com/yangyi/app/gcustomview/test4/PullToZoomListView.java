@@ -9,6 +9,10 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
@@ -177,6 +181,7 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+//        switch (motionEvent.getAction()) {
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_DOWN:
@@ -284,6 +289,9 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
         this.mShadow.setBackgroundResource(res);
     }
 
+    /**
+     * 向上返回的动画
+     */
     class ScalingRunnalable implements Runnable {
         long mDuration;//持续时间
         boolean mIsFinished = true;//是否结束
@@ -316,7 +324,6 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
             ViewGroup.LayoutParams mHeaderContainerParams;//头部样式
             //判断是否中止和已经滑动超过的默认大小
             if ((!this.mIsFinished) && (this.mScale > 1.0D)) {
-
                 float currentTime = ((float) SystemClock.currentThreadTimeMillis() - (float) this.mStartTime) / (float) this.mDuration;
                 currentScale = this.mScale - (this.mScale - 1.0F) * PullToZoomListView.sInterpolator.getInterpolation(currentTime);
                 Log.d(TAG, "ScalingRunnalable currentTime = " + currentTime + " currentScale = " + currentScale);
