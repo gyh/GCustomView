@@ -99,18 +99,16 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
     }
 
     /**
-     * 多点触碰的时候按下，设置最后的点击位置，和当前手指
+     * 多点触碰的时候按下,当第0个有手指抬起，再次有手指按下后，将按下的事件的手指指针作为当前手指指针
      *
      * @param motionEvent
      */
     private void onSecondaryPointerUp(MotionEvent motionEvent) {
-        int pointerIndex = (motionEvent.getAction()) >> 8;
-        Log.d(TAG, "onSecondaryPointerUp pointerIndex = " + pointerIndex);
-        if (motionEvent.getPointerId(pointerIndex) == this.mActivePointerId) {
-            if (pointerIndex != 0) {
-                this.mLastMotionY = motionEvent.getY(0);
-                this.mActivePointerId = motionEvent.getPointerId(0);
-            }
+        Log.d(TAG, "onSecondaryPointerUp motionEvent.getPointerId(0) = " + motionEvent.getPointerId(0));
+        Log.d(TAG, "onSecondaryPointerUp this.mActivePointerId = " + this.mActivePointerId);
+        if (motionEvent.getPointerId(0) == this.mActivePointerId) {
+            this.mLastMotionY = motionEvent.getY(0);
+            this.mActivePointerId = motionEvent.getPointerId(0);
         }
         Log.d(TAG, "onSecondaryPointerUp mLastMotionY = " + mLastMotionY);
         Log.d(TAG, "onSecondaryPointerUp mActivePointerId = " + mActivePointerId);
@@ -179,7 +177,7 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
-        switch (motionEvent.getAction()) {
+        switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_DOWN:
                 if (!this.mScalingRunnalable.mIsFinished) {
@@ -249,12 +247,14 @@ public class PullToZoomListView extends ListView implements AbsListView.OnScroll
                 Log.d(TAG, "onTouchEvent  ACTION_CANCEL  actionIndex = " + actionIndex + " mLastMotionY = " + mLastMotionY + " mActivePointerId = " + mActivePointerId);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
+                //当第二个手指按下或者放开触发这个事件
                 onSecondaryPointerUp(motionEvent);
                 this.mLastMotionY = motionEvent.getY(motionEvent.findPointerIndex(this.mActivePointerId));
-                Log.d(TAG, "onTouchEvent  ACTION_POINTER_DOWN mLastMotionY = " + mLastMotionY);
+                Log.d(TAG, "onTouchEvent_Po  ACTION_POINTER_DOWN mLastMotionY = " + mLastMotionY);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                Log.d(TAG, "onTouchEvent  ACTION_POINTER_UP ");
+                //当第二个手指按下或者放开
+                Log.d(TAG, "onTouchEvent_Po  ACTION_POINTER_UP ");
                 break;
         }
         return super.onTouchEvent(motionEvent);

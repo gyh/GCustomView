@@ -1,72 +1,106 @@
 package com.yangyi.app.gcustomview;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
-import com.yangyi.app.gcustomview.test2.MyScrollView;
+import com.yangyi.app.gcustomview.test1.ScrollViewSampleActivity;
+import com.yangyi.app.gcustomview.test2.MyScorllActivity;
+import com.yangyi.app.gcustomview.test3.MoveViewActivity;
+import com.yangyi.app.gcustomview.test4.PullToZoomActivity;
 
 
-public class MainActivity extends Activity implements MyScrollView.OnScrollListener {
-    private static final String TAG = "guoyuehua";
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
-    private EditText search_edit;
-    private MyScrollView myScrollView;
-    private int searchLayoutTop;
 
-    LinearLayout search01,search02;
-    RelativeLayout rlayout;
-    View tvtitle ;
+    private String[] strTypes = new String[]{
+            "test1 -- 头部渐变 ",
+            "test2 -- 滑动头部停留",
+            "test3 -- 仿半塘图片添加标签效果",
+            "test4 --- https://github.com/matrixxun/PullToZoomInListView这个项目添加注释和优化"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //初始化控件
-        init();
+        initListView();
     }
 
-    private void init() {
-        search_edit = (EditText)findViewById(R.id.search_edit);
-        myScrollView = (MyScrollView)findViewById(R.id.myScrollView);
-        search01 = (LinearLayout)findViewById(R.id.search01);
-        search02 = (LinearLayout)findViewById(R.id.search02);
-        rlayout = (RelativeLayout)findViewById(R.id.rlayout);
-        tvtitle = findViewById(R.id.layoutr2);
-        myScrollView.setOnScrollListener(this);
 
+    private void initListView(){
+        ListView listView = (ListView)findViewById(R.id.listview);
+        listView.setAdapter(new MyAdapter(this,this.strTypes));
+        listView.setOnItemClickListener(this);
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if(hasFocus){
-            searchLayoutTop = rlayout.getBottom()-tvtitle.getBottom();//获取searchLayout的顶部位置
-            Log.v(TAG," onWindowFocusChanged -------->>>>>  searchLayoutTop = "+searchLayoutTop);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        switch (position){
+            case 0:
+                startActivity(new Intent(MainActivity.this, ScrollViewSampleActivity.class));
+                break;
+            case 1:
+                startActivity(new Intent(MainActivity.this, MyScorllActivity.class));
+                break;
+            case 2:
+                startActivity(new Intent(MainActivity.this, MoveViewActivity.class));
+                break;
+            case 3:
+                startActivity(new Intent(MainActivity.this, PullToZoomActivity.class));
+                break;
+            case 4:
+                break;
         }
     }
 
-    //监听滚动Y值变化，通过addView和removeView来实现悬停效果
-    @Override
-    public void onScroll(int scrollY) {
-        Log.v(TAG,"onScroll ------------>>>>>>>>>>   scrollY = "+scrollY);
-        Log.v(TAG,"onScroll ------------>>>>>>>>>>   searchLayoutTop = "+searchLayoutTop);
-        if(scrollY >= searchLayoutTop){
-            Log.v(TAG,"onScroll ------------>>>>>>>>>>   search_edit.getParent() = "+search_edit.getParent());
-            if (search_edit.getParent()!=search01) {
-                search02.removeView(search_edit);
-                search01.addView(search_edit);
+
+    class MyAdapter extends BaseAdapter {
+
+        String[] strings;
+
+        LayoutInflater listContainer;
+
+        MyAdapter(Context context,String[] strings){
+            this.strings = strings;
+            listContainer = LayoutInflater.from(context);
+        }
+
+        @Override
+        public int getCount() {
+            return strings.length;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return strings[position];
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView textView = null;
+            if(convertView==null){
+                convertView = listContainer.inflate(R.layout.item_listview,null);
+                textView = (TextView)convertView.findViewById(R.id.itemTv);
+                convertView.setTag(textView);
+            }else {
+                textView = (TextView)convertView.getTag();
             }
-        }else{
-            Log.v(TAG,"onScroll ------------>>>>>>>>>>   search_edit.getParent() = "+search_edit.getParent());
-            if (search_edit.getParent()!=search02) {
-                search01.removeView(search_edit);
-                search02.addView(search_edit);
-            }
+            textView.setText(strings[position]);
+            return convertView;
         }
     }
 }
