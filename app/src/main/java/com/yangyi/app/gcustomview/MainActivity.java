@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.yangyi.app.gcustomview.test1.ScrollViewSampleActivity;
 import com.yangyi.app.gcustomview.test2.MyScorllActivity;
+import com.yangyi.app.gcustomview.test3.FrameLabelActivity;
 import com.yangyi.app.gcustomview.test3.MoveViewActivity;
 import com.yangyi.app.gcustomview.test4.PullToZoomActivity;
 
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(new Intent(MainActivity.this, MyScorllActivity.class));
                 break;
             case 2:
-                startActivity(new Intent(MainActivity.this, MoveViewActivity.class));
+                startActivity(new Intent(MainActivity.this, FrameLabelActivity.class));
                 break;
             case 3:
                 startActivity(new Intent(MainActivity.this, PullToZoomActivity.class));

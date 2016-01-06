@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yangyi.app.gcustomview.test3.LabelFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/labelframe">
+        <ImageView
+            android:id="@+id/imgeview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="400dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/cexxxl"/>
+    </com.yangyi.app.gcustomview.test3.LabelFrameLayout>
+
+
+
+    <Button
+        android:layout_marginTop="50dp"
+        android:id="@+id/btnselect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="选择照片"
+        android:visibility="visible"/>
+    <Button
+        android:layout_marginTop="50dp"
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="保存照片"
+        android:visibility="visible"/>
+
+</LinearLayout>

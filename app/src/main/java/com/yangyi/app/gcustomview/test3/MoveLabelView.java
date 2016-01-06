@@ -1,10 +1,12 @@
 package com.yangyi.app.gcustomview.test3;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ public class MoveLabelView extends FrameLayout{
     private int xDown;
     private int yDown;
 
+    private int bottom = 0;
+
     private MoveLabelListener moveLabelListener;
 
     public MoveLabelView(final Context context, AttributeSet attrs) {
@@ -46,26 +50,33 @@ public class MoveLabelView extends FrameLayout{
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        this.bottom = bottom;
+        Log.v(TAG, "onLayout  bottom = " + bottom);
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()){
             case MotionEvent.ACTION_UP:
-                Log.v(TAG, "onTouchEvent ACTION_UP " + " X = " + ev.getX() + " Y = " + ev.getY());
+//                Log.v(TAG, "onTouchEvent ACTION_UP " + " X = " + ev.getX() + " Y = " + ev.getY());
                 //判断是否在子视图上
                 //如果不在子上图，判断是否是点击事件
                 //如果在子视图上，判断是否移动，如果没有移动，则切换子视图样式，重新绘制子视图，如果移动了，则不做处理
-                Log.v(TAG, "onTouchEvent ACTION_UP " + " currentSubView = " + currentSubView);
+//                Log.v(TAG, "onTouchEvent ACTION_UP " + " currentSubView = " + currentSubView);
                 if(currentSubView != null){
                     //判断是否已经移动过
                     if(isHasOnClick){
                         //判断是否点击到中心位置
                         if(currentSubView.isClickCenterView((int) ev.getX(), (int) ev.getY())){
                             //修改状态
-                            currentSubView.switchType();
-                            showLayoutView();
+                            startHideAnmotion();
                         }else {
                             //判断是否点击了标签
                             if(currentSubView.isClickLabelView((int) ev.getX(), (int) ev.getY())){
@@ -84,24 +95,24 @@ public class MoveLabelView extends FrameLayout{
                             Toast.makeText(context,"对多 3 个",Toast.LENGTH_SHORT).show();
                             return false;
                         }
-//                        creatSubView((int) ev.getX(), (int) ev.getY(),"12334455");
-                        moveLabelListener.onClickMoveLable((int) ev.getX(), (int) ev.getY(),null);
+                        creatSubView((int) ev.getX(), (int) ev.getY(), "12334455");
+//                        moveLabelListener.onClickMoveLable((int) ev.getX(), (int) ev.getY(),null);
                     }
                 }
-                Log.v(TAG, "onTouchEvent ACTION_UP " + " isHasOnClick = " + isHasOnClick);
+//                Log.v(TAG, "onTouchEvent ACTION_UP " + " isHasOnClick = " + isHasOnClick);
                 isHasOnClick = false;
                 break;
             case MotionEvent.ACTION_DOWN:
-                Log.v(TAG, "onTouchEvent ACTION_DOWN " + " X = " + ev.getX() + " Y = " + ev.getY());
+//                Log.v(TAG, "onTouchEvent ACTION_DOWN " + " X = " + ev.getX() + " Y = " + ev.getY());
                 //判断是否点击在子视图上面，如果在子视图上面
                 isDownSubView((int)ev.getX(),(int)ev.getY());
                 xDown = (int)ev.getX();
                 yDown = (int)ev.getY();
                 isHasOnClick = true;
-                Log.v(TAG, "onTouchEvent ACTION_DOWN " + " isHasOnClick = " +isHasOnClick);
+//                Log.v(TAG, "onTouchEvent ACTION_DOWN " + " isHasOnClick = " +isHasOnClick);
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.v(TAG, "onTouchEvent ACTION_MOVE " + " X = " + ev.getX() + " Y = " + ev.getY());
+//                Log.v(TAG, "onTouchEvent ACTION_MOVE " + " X = " + ev.getX() + " Y = " + ev.getY());
                 //判断是否为点击事件
                 if(isHasOnClick){
                     isHasOnClick = !isMove((int) ev.getX(), (int) ev.getY());
@@ -113,11 +124,11 @@ public class MoveLabelView extends FrameLayout{
                     currentSubView.refreshOffset(xOf, yOf);
                     //一旦已经移动过就设置为移动了
                     if(currentSubView.isMoveView()){
-                        Log.v(TAG, "onTouchEvent ACTION_MOVE " + " showLayoutView ");
+//                        Log.v(TAG, "onTouchEvent ACTION_MOVE " + " showLayoutView ");
                         showLayoutView();
                     }
                 }
-                Log.v(TAG, "onTouchEvent ACTION_MOVE " + " isHasOnClick = " + isHasOnClick);
+//                Log.v(TAG, "onTouchEvent ACTION_MOVE " + " isHasOnClick = " + isHasOnClick);
                 break;
         }
         return true;
@@ -152,11 +163,12 @@ public class MoveLabelView extends FrameLayout{
         Log.v(TAG, "showLayoutView left = " + currentSubView.getViewLeft() +
                 " top = " + currentSubView.getViewTop() +
                 " right = " + currentSubView.getViewRight() +
-                " bottom = " +currentSubView.getViewBottom() );
+                " bottom = " + currentSubView.getViewBottom());
         currentSubView.layout(currentSubView.getViewLeft(),
                 currentSubView.getViewTop(),
                 currentSubView.getViewRight(),
                 currentSubView.getViewBottom());
+        currentSubView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, this.bottom));
     }
 
     /**
@@ -222,7 +234,71 @@ public class MoveLabelView extends FrameLayout{
         currentSubView = myClickView;
         this.addView(myClickView);
         showLayoutView();
+        startShowAnmotion();
         return true;
+    }
+
+    /**
+     * 展示动画
+     */
+    private void startShowAnmotion(){
+        ValueAnimator anim ;
+        if(currentSubView.currentType == currentSubView.FRIST_TYPE){
+            anim = ValueAnimator.ofInt(currentSubView.getWidthView(),0);
+        }else {
+            anim = ValueAnimator.ofInt(0,currentSubView.getWidthView());
+        }
+        anim.setDuration(500);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int currvalu = (int) animation.getAnimatedValue();
+                if (currentSubView.currentType == currentSubView.FRIST_TYPE) {
+                    currentSubView.refershArea(currvalu, 0, currentSubView.getWidthView(), currentSubView.getHeightView());
+                } else {
+                    currentSubView.refershArea(0, 0, currvalu, currentSubView.getHeightView());
+                }
+            }
+        });
+        anim.start();
+    }
+
+    /**
+     * 隐藏动画
+     */
+    public void startHideAnmotion(){
+        final ValueAnimator anim ;
+        if(currentSubView.currentType == currentSubView.FRIST_TYPE){
+            anim = ValueAnimator.ofInt(0,currentSubView.getWidthView());
+        }else {
+            anim = ValueAnimator.ofInt(currentSubView.getWidthView(),0);
+        }
+        anim.setDuration(500);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int cValues = (int) animation.getAnimatedValue();
+                //TODO 判断当前的子view是否为空
+                if (currentSubView.currentType == currentSubView.FRIST_TYPE) {
+                    currentSubView.refershArea(cValues, 0, currentSubView.getWidthView(), currentSubView.getHeightView());
+                    if(cValues == currentSubView.getWidthView()){
+                        currentSubView.switchType();
+                        showLayoutView();
+                        startShowAnmotion();
+                    }
+                } else {
+                    currentSubView.refershArea(0, 0, cValues, currentSubView.getHeightView());
+                    if(cValues == 0){
+                        currentSubView.switchType();
+                        showLayoutView();
+                        startShowAnmotion();
+                    }
+                }
+
+
+            }
+        });
+        anim.start();
     }
 
     /**
@@ -250,7 +326,6 @@ public class MoveLabelView extends FrameLayout{
         subViewList.remove(view);
         return true;
     }
-
 
     interface MoveLabelListener{
         void onClickMoveLable(int x,int y,View view);

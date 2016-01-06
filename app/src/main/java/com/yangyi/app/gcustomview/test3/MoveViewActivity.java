@@ -23,6 +23,7 @@ public class MoveViewActivity extends AppCompatActivity implements MoveLabelView
         setContentView(R.layout.activity_moveview);
         moveLabelView = (MoveLabelView)findViewById(R.id.movelable);
         moveLabelView.setMoveLabelListener(this);
+        moveLabelView.setBackgroundResource(R.mipmap.dkkdk);
     }
 
     /*自定义对话框*/

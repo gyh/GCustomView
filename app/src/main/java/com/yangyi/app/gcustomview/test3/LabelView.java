@@ -7,15 +7,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.yangyi.app.gcustomview.R;
 
@@ -26,14 +19,14 @@ public class LabelView extends View {
 
     private static final String TAG = "MyClickView";
 
-    private static final int FRIST_TYPE = 0;
-    private static final int SECOND_TYPE = 1;
+    public static final int FRIST_TYPE = 0;
+    public static final int SECOND_TYPE = 1;
 
     private static final int MOVE_THRESHOLD = 20;
 
     private static final int CENTER_RADIUS = 60;
 
-    private int currentType = FRIST_TYPE;
+    public int currentType = FRIST_TYPE;
 
     private int heightView = 300;//子视图的高
 
@@ -56,9 +49,14 @@ public class LabelView extends View {
     private Paint mPaint;
 
     private Rect mBounds;
+    //可见区域变化
+    private int areaLeft = 0;
+    private int areaTop = 0;
+    private int areaRight = 0;
+    private int areaBottom = 0;
 
     //购物车图片
-    BitmapDrawable bmpDraw = (BitmapDrawable) getResources().getDrawable(R.mipmap.diany);
+    BitmapDrawable bmpDraw = (BitmapDrawable) getResources().getDrawable(R.mipmap.icon_origin);
     Bitmap bmp = bmpDraw.getBitmap();
 
     public LabelView(Context context, String text, int x, int y) {
@@ -66,36 +64,39 @@ public class LabelView extends View {
         this.text = text;
         xPrevious = x;
         yPrevious = y;
-        this.currentType = FRIST_TYPE;
+
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mBounds = new Rect();
+        this.currentType = FRIST_TYPE;
+        bgColor = getResources().getColor(R.color.colorAccent);
+        textColor = Color.parseColor("#111111");
         initBind();
-        switchType();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        mPaint.setColor(bgColor);
-        if(currentType == FRIST_TYPE){
-            canvas.drawRect(0, 0, widthView - bmp.getWidth(), heightView, mPaint);
-        }else {
-            canvas.drawRect(bmp.getWidth(), 0, widthView, heightView, mPaint);
-        }
-        Log.v(TAG, "onDraw widthView = " + widthView + " heightView = " + heightView);
-        mPaint.setColor(textColor);
+        canvas.save();
         float textWidth = mBounds.width();
         float textHeight = mBounds.height();
         if(currentType == FRIST_TYPE){
+            canvas.clipRect(areaLeft, areaTop, areaRight, areaBottom);
+            mPaint.setColor(bgColor);
+            canvas.drawRect(0, 0, widthView - bmp.getWidth(), heightView, mPaint);
+            mPaint.setColor(textColor);
             canvas.drawText(text, (widthView - bmp.getWidth()) / 2 - textWidth / 2,
                     heightView / 2 + textHeight / 2, mPaint);
             Log.v(TAG, "onDraw drawText x = " +((widthView - bmp.getWidth()) / 2 - textWidth / 2)
                     + "y = " + (heightView / 2 - textHeight / 2));
-            canvas.drawBitmap(bmp, widthView-bmp.getWidth(), (heightView-bmp.getWidth())/2, null);
+            canvas.drawBitmap(bmp, widthView-bmp.getWidth(), (heightView-bmp.getWidth())/2, mPaint);
             Log.v(TAG, "onDraw  bmp  x = " + (widthView-bmp.getWidth())
-                    + " y = " + ( (heightView-bmp.getWidth())/2));
-        }else {
-            canvas.drawBitmap(bmp, 0, (heightView-bmp.getWidth())/2, null);
+                    + " y = " + ((heightView - bmp.getWidth()) / 2));
+        } else {
+            canvas.clipRect(areaLeft, areaTop, areaRight, areaBottom);
+            mPaint.setColor(bgColor);
+            canvas.drawRect(bmp.getWidth(), 0, widthView, heightView, mPaint);
+            mPaint.setColor(textColor);
+            canvas.drawBitmap(bmp, 0, (heightView - bmp.getWidth()) / 2, mPaint);
             Log.v(TAG, "onDraw  bmp.getWidth()/2 = " + bmp.getWidth() / 2
                     + " bmp.getHeight()/2 = " + bmp.getHeight() / 2);
             canvas.drawText(text, (widthView + bmp.getWidth()) / 2 - textWidth / 2,
@@ -104,6 +105,7 @@ public class LabelView extends View {
                     + " getHeight() / 2 + textHeight / 2 = " + (getHeight() / 2 + textHeight / 2));
         }
         Log.v(TAG, "onDraw  currentType = " + currentType);
+        canvas.restore();
     }
 
     /**
@@ -121,6 +123,7 @@ public class LabelView extends View {
      * 切换视图类型
      */
     public void switchType() {
+        Log.v(TAG,"switchType");
         if (currentType == FRIST_TYPE) {
             currentType = SECOND_TYPE;
             bgColor = getResources().getColor(R.color.colorPrimary);
@@ -199,7 +202,7 @@ public class LabelView extends View {
                     return false;
                 }
             }else {
-                if(x<xPrevious+bmp.getWidth() && x<xPrevious+widthView ){
+                if(x>xPrevious+bmp.getWidth() && x<xPrevious+widthView ){
                     return true;
                 }else {
                     return false;
@@ -267,5 +270,30 @@ public class LabelView extends View {
 
     public int getViewBottom() {
         return yPrevious + yOffset + heightView / 2;
+    }
+
+    /**
+     * 更新可见区域
+     * @param areaLeft
+     * @param areaTop
+     * @param areaRight
+     * @param areaBottom
+     */
+    public void refershArea(int areaLeft,int areaTop,int areaRight, int areaBottom){
+        this.areaLeft = areaLeft;
+        this.areaTop = areaTop;
+        this.areaRight = areaRight;
+        this.areaBottom = areaBottom;
+        invalidate();
+    }
+
+
+
+    public int getHeightView() {
+        return heightView;
+    }
+
+    public int getWidthView() {
+        return widthView;
     }
 }
