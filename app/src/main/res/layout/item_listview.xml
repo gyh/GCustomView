@@ -9,5 +9,5 @@
         android:id="@+id/itemTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:maxHeight="40dp"/>
+        android:minHeight="40dp"/>
 </LinearLayout>

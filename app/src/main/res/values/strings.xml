@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GCustomView</string>
+    <string name="app_name">gcus</string>
     <string name="app_ScrollView">ScrollViewSampleActivity</string>
     <string name="action_settings">Settings</string>
     <string name="app_pulltozoom">pullToZoom</string>
