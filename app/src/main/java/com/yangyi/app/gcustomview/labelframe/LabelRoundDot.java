@@ -1,9 +1,8 @@
-package com.yangyi.app.gcustomview.test3;
+package com.yangyi.app.gcustomview.labelframe;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -14,17 +13,16 @@ import android.graphics.drawable.Drawable;
 /**
  * Created by GYH on 2016/1/5.
  */
-public class LabelTextView extends Drawable{
+public class LabelRoundDot extends Drawable{
 
     private Paint mPaint;
     private Bitmap mBitmap;
 
     private RectF rectF;
 
-    public LabelTextView(Bitmap bitmap) {
+    public LabelRoundDot(Bitmap bitmap) {
         mBitmap = bitmap;
-        BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP,
-                Shader.TileMode.CLAMP);
+        BitmapShader bitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setShader(bitmapShader);
@@ -38,8 +36,7 @@ public class LabelTextView extends Drawable{
     }
 
     @Override
-    public void draw(Canvas canvas)
-    {
+    public void draw(Canvas canvas) {
         canvas.drawRoundRect(rectF, 30, 30, mPaint);
     }
 

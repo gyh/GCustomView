@@ -25,32 +25,40 @@
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".test3.MoveViewActivity"
+        <activity android:name=".labelframe.move.MoveViewActivity"
             android:label="@string/app_moveview"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name=".test3.FrameLabelActivity"
+        <activity android:name=".labelframe.FrameLabelActivity"
             android:label="@string/app_moveview"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name=".test4.PullToZoomActivity"
+        <activity android:name=".pullzoom.PullToZoomActivity"
             android:label="@string/app_pulltozoom"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".test2.MyScorllActivity"
+        <activity android:name=".slidetop.MyScorllActivity"
             android:label="@string/app_myscroll"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
 
         </activity>
+        <activity android:name=".test5.HListViewActivity"
+            android:label="@string/app_hlistview"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".test6.PhotoActivity"
+            android:label="@string/app_hlistview"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

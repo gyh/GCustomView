@@ -1,23 +1,13 @@
-package com.yangyi.app.gcustomview.test3;
+package com.yangyi.app.gcustomview.labelframe;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.yangyi.app.gcustomview.R;
 import com.yangyi.app.gcustomview.Utils;
@@ -39,7 +29,7 @@ public class OneLabelView extends View implements LabelViewListener {
     private static final int MOVE_OFFSET = 20;
     //中心点击半径
     private static final int CENTER_RADIUS = 60;
-    private static final int VIEW_PADDING = 20;
+//    private static final int VIEW_PADDING = 20;
     //当前模式
     public int currentType = FRIST_MODEL;
 
@@ -52,9 +42,6 @@ public class OneLabelView extends View implements LabelViewListener {
     //偏移量
     private int xOffset;
     private int yOffset;
-    //内容
-    private String labelText;
-
     //可见区域变化
     private int areaLeft = 0;
     private int areaTop = 0;
@@ -62,7 +49,7 @@ public class OneLabelView extends View implements LabelViewListener {
     private int areaBottom = 0;
 
     private Paint mPaint;
-    private Rect mBounds;
+    private LabelTextView labelTextView;
 
     //原点图片
     private BitmapDrawable bmpDraw = (BitmapDrawable) getResources().getDrawable(R.mipmap.kkkk);
@@ -73,31 +60,28 @@ public class OneLabelView extends View implements LabelViewListener {
         setWillNotDraw(false);
         this.xPrevious = x;
         this.yPrevious = y;
-        this.labelText = text;
-        initView();
+        labelTextView = new LabelTextView(text, LabelTextView.FRIST_TYPE);
+        originPic = Utils.drawableToBitmap(new LabelRoundDot(originPic));
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        initWidthHeight();
     }
-
     /**
      * 初始化
      */
-    private void initView() {
-
-        originPic = Utils.drawableToBitmap(new LabelTextView(originPic));
-
-        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBounds = new Rect();
-        mPaint.setTextSize(20);
-        mPaint.getTextBounds(this.labelText, 0, this.labelText.length(), mBounds);
-        labelViewHeight = mBounds.height() + VIEW_PADDING;
-        labelViewWidth = mBounds.width() + originPic.getWidth() + labelViewHeight*3/2;
-        Log.i(TAG, "initView labelViewWidth = " + labelViewWidth + " labelViewHeight = " + labelViewHeight);
+    private void initWidthHeight() {
+        labelViewHeight =labelTextView.getIntrinsicHeight();
+        labelViewWidth = labelTextView.getIntrinsicWidth() + originPic.getWidth();
+        Log.i(TAG, "initWidthHeight labelViewWidth = " + labelViewWidth + " labelViewHeight = " + labelViewHeight);
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.i(TAG, "--  onDraw -------");
+//        Log.i(TAG, "--  onDraw -------");
+//        Rect bg = new Rect(0, 0, labelViewWidth, labelViewHeight);
+//        mPaint.setColor(Color.parseColor("#ffffff"));
+//        canvas.drawRect(bg, mPaint);
         canvas.save();
         canvas.clipRect(areaLeft, areaTop, areaRight, areaBottom);
         if (currentType == FRIST_MODEL) {
@@ -115,29 +99,7 @@ public class OneLabelView extends View implements LabelViewListener {
      */
     private void onDrawFirst(Canvas canvas) {
         Log.i(TAG, "onDrawFirst ---------");
-        mPaint.setStrokeWidth(3);
-        mPaint.setColor(Color.parseColor("#99000000"));
-        //画半圆
-        RectF oval = new RectF(0, 0, labelViewHeight, labelViewHeight);
-        canvas.drawArc(oval,270, -180, true, mPaint);
-
-        //画矩形
-        Rect targetRect = new Rect(labelViewHeight/2, 0, labelViewWidth-originPic.getWidth() - labelViewHeight, labelViewHeight);
-        canvas.drawRect(targetRect, mPaint);
-        //画三角形
-        Path path = new Path();
-        path.moveTo(labelViewWidth-originPic.getWidth() - labelViewHeight, 0);// 此点为多边形的起点
-        path.lineTo(labelViewWidth-originPic.getWidth(), labelViewHeight/2);
-        path.lineTo(labelViewWidth-originPic.getWidth() - labelViewHeight, labelViewHeight);
-        path.close(); // 使这些点构成封闭的多边形
-        canvas.drawPath(path, mPaint);
-        //写文字
-        mPaint.setColor(Color.parseColor("#ffffff"));
-        Paint.FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
-        int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-        // 下面这行是实现水平居中，drawText对应改为传入targetRect.centerX()
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(labelText, targetRect.centerX(), baseline, mPaint);
+        canvas.drawBitmap(Utils.drawableToBitmap(labelTextView),4,0,mPaint);
         //画原点
         int xBmp = labelViewWidth-originPic.getWidth();
         int yBmp = (labelViewHeight-originPic.getWidth())/2;
@@ -152,29 +114,7 @@ public class OneLabelView extends View implements LabelViewListener {
      */
     private void onDrawSecond(Canvas canvas) {
         Log.i(TAG, "onDrawSecond ---------");
-        mPaint.setStrokeWidth(3);
-        mPaint.setColor(Color.parseColor("#99000000"));
-        //画半圆
-        RectF oval = new RectF(labelViewWidth - labelViewHeight, 0, labelViewWidth, labelViewHeight);
-        canvas.drawArc(oval,90, -180, true, mPaint);
-
-        //画矩形
-        Rect targetRect = new Rect(labelViewHeight+originPic.getWidth(), 0, labelViewWidth-labelViewHeight/2, labelViewHeight);
-        canvas.drawRect(targetRect, mPaint);
-        //画三角形
-        Path path = new Path();
-        path.moveTo(labelViewHeight+originPic.getWidth(), 0);// 此点为多边形的起点
-        path.lineTo(originPic.getWidth(), labelViewHeight/2);
-        path.lineTo(labelViewHeight+originPic.getWidth(), labelViewHeight);
-        path.close(); // 使这些点构成封闭的多边形
-        canvas.drawPath(path, mPaint);
-        //写文字
-        mPaint.setColor(Color.parseColor("#ffffff"));
-        Paint.FontMetricsInt fontMetrics = mPaint.getFontMetricsInt();
-        int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-        // 下面这行是实现水平居中，drawText对应改为传入targetRect.centerX()
-        mPaint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(labelText, targetRect.centerX(), baseline, mPaint);
+        canvas.drawBitmap(Utils.drawableToBitmap(labelTextView), originPic.getWidth()-4, 0, mPaint);
         //画原点
         int xBmp = 0;
         int yBmp = (labelViewHeight-originPic.getWidth())/2;
@@ -186,9 +126,9 @@ public class OneLabelView extends View implements LabelViewListener {
     @Override
     public int getLayoutLeft() {
         if (currentType == FRIST_MODEL) {
-            return xPrevious + xOffset - labelViewWidth;
+            return xPrevious + xOffset - labelViewWidth+originPic.getWidth()/2;
         } else if (currentType == SECOND_MODEL) {
-            return xPrevious + xOffset;
+            return xPrevious + xOffset - originPic.getWidth()/2;
         }
         return 0;
     }
@@ -201,9 +141,9 @@ public class OneLabelView extends View implements LabelViewListener {
     @Override
     public int getLayoutRight() {
         if (currentType == FRIST_MODEL) {
-            return xPrevious + xOffset;
+            return xPrevious + xOffset+originPic.getWidth()/2;
         } else if (currentType == SECOND_MODEL) {
-            return xPrevious + xOffset + labelViewWidth;
+            return xPrevious + xOffset + labelViewWidth -originPic.getWidth()/2;
         }
         return 0;
     }
@@ -217,8 +157,10 @@ public class OneLabelView extends View implements LabelViewListener {
     public void switchType() {
         if (currentType == FRIST_MODEL) {
             currentType = SECOND_MODEL;
+            labelTextView.setCurrentType(LabelTextView.SECOND_TYPE);
         } else if (currentType == SECOND_MODEL) {
             currentType = FRIST_MODEL;
+            labelTextView.setCurrentType(LabelTextView.FRIST_TYPE);
         }
         invalidate();
     }
@@ -243,13 +185,13 @@ public class OneLabelView extends View implements LabelViewListener {
     public boolean clickInLabelView(int x, int y) {
         if (y > yPrevious - labelViewHeight / 2 && y < yPrevious + labelViewHeight / 2) {
             if (currentType == FRIST_MODEL) {
-                if (x > xPrevious - labelViewWidth && x < xPrevious) {
+                if (x > xPrevious - labelViewWidth +originPic.getWidth()/2 && x < xPrevious +originPic.getWidth()/2) {
                     return true;
                 } else {
                     return false;
                 }
             } else {
-                if (x > xPrevious && x < xPrevious + labelViewWidth) {
+                if (x > xPrevious -originPic.getWidth()/2&& x < xPrevious + labelViewWidth - originPic.getWidth()/2) {
                     return true;
                 } else {
                     return false;
@@ -293,16 +235,16 @@ public class OneLabelView extends View implements LabelViewListener {
     @Override
     public void setLabelTextList(List<String> textList) {
         if (textList != null && textList.size() > 0) {
-            this.labelText = textList.get(0);
+            labelTextView.setLabelText(textList.get(0));
+            initWidthHeight();
+            showCurrent();
         }
-        initView();
-        invalidate();
     }
 
     @Override
     public List<String> getLabelTextList() {
         List<String> strings = new ArrayList<>();
-        strings.add(labelText);
+        strings.add(labelTextView.getLabelText());
         return strings;
     }
 

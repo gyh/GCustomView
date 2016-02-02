@@ -1,4 +1,4 @@
-package com.yangyi.app.gcustomview.test3;
+package com.yangyi.app.gcustomview.labelframe;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -327,6 +327,7 @@ public class LabelFrameLayout extends FrameLayout {
             if (listener.getLabelTextList() != null) {
                 if (listener.getLabelTextList().size() == text.size()) {
                     listener.setLabelTextList(text);
+                    showLayoutView();
                 }else {
                     removeLabelView(view);
                     createLabelView(listener.getProitX(),listener.getProitY(),text);

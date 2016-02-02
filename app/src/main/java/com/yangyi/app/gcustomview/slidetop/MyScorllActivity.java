@@ -1,4 +1,4 @@
-package com.yangyi.app.gcustomview.test2;
+package com.yangyi.app.gcustomview.slidetop;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

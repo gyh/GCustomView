@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.yangyi.app.gcustomview.test3.LabelFrameLayout
+    <com.yangyi.app.gcustomview.labelframe.LabelFrameLayout
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:id="@+id/labelframe">
@@ -15,7 +15,7 @@
             android:minHeight="400dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/cexxxl"/>
-    </com.yangyi.app.gcustomview.test3.LabelFrameLayout>
+    </com.yangyi.app.gcustomview.labelframe.LabelFrameLayout>
 
 
 

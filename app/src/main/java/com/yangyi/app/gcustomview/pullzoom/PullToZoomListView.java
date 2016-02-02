@@ -1,4 +1,4 @@
-package com.yangyi.app.gcustomview.test4;
+package com.yangyi.app.gcustomview.pullzoom;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,10 +9,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
-import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;

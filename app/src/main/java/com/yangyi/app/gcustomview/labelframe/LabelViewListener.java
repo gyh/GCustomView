@@ -1,9 +1,6 @@
-package com.yangyi.app.gcustomview.test3;
+package com.yangyi.app.gcustomview.labelframe;
 
 import android.animation.ValueAnimator;
-import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
 
 import java.util.List;
 

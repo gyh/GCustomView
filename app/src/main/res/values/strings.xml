@@ -4,5 +4,6 @@
     <string name="action_settings">Settings</string>
     <string name="app_pulltozoom">pullToZoom</string>
     <string name="app_myscroll">myscroll</string>
+    <string name="app_hlistview">hlistview</string>
     <string name="app_moveview">moveview</string>
 </resources>

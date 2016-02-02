@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.yangyi.app.gcustomview.test2.MyScrollView
+    <com.yangyi.app.gcustomview.slidetop.MyScrollView
         android:id="@+id/myScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -55,7 +55,7 @@
                 android:text="测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容\n测试内容"
                 android:textSize="40dp" />
         </LinearLayout>
-    </com.yangyi.app.gcustomview.test2.MyScrollView>
+    </com.yangyi.app.gcustomview.slidetop.MyScrollView>
 
     <TextView
         android:id="@+id/layoutr2"

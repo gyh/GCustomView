@@ -1,4 +1,4 @@
-package com.yangyi.app.gcustomview.test3;
+package com.yangyi.app.gcustomview.labelframe;
 
 import android.content.ContentResolver;
 import android.content.DialogInterface;

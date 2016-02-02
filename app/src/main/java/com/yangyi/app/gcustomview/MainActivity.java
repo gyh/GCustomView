@@ -12,18 +12,15 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.yangyi.app.gcustomview.test1.ScrollViewSampleActivity;
-import com.yangyi.app.gcustomview.test2.MyScorllActivity;
-import com.yangyi.app.gcustomview.test3.FrameLabelActivity;
-import com.yangyi.app.gcustomview.test3.MoveViewActivity;
-import com.yangyi.app.gcustomview.test4.PullToZoomActivity;
+import com.yangyi.app.gcustomview.slidetop.MyScorllActivity;
+import com.yangyi.app.gcustomview.labelframe.FrameLabelActivity;
+import com.yangyi.app.gcustomview.pullzoom.PullToZoomActivity;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
 
     private String[] strTypes = new String[]{
-            "test1 -- 头部渐变 ",
             "test2 -- 滑动头部停留",
             "test3 -- 仿半塘图片添加标签效果",
             "test4 --- https://github.com/matrixxun/PullToZoomInListView这个项目添加注释和优化"};
@@ -47,18 +44,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (position){
             case 0:
-                startActivity(new Intent(MainActivity.this, ScrollViewSampleActivity.class));
-                break;
-            case 1:
                 startActivity(new Intent(MainActivity.this, MyScorllActivity.class));
                 break;
-            case 2:
+            case 1:
                 startActivity(new Intent(MainActivity.this, FrameLabelActivity.class));
                 break;
-            case 3:
+            case 2:
                 startActivity(new Intent(MainActivity.this, PullToZoomActivity.class));
-                break;
-            case 4:
                 break;
         }
     }
