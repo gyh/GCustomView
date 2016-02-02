@@ -1,9 +1,14 @@
 package com.yangyi.app.gcustomview;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -17,6 +22,7 @@ import java.io.IOException;
  */
 public class Utils {
 
+    private static final String  TAG = "Utils";
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         int width = drawable.getIntrinsicWidth();
@@ -133,5 +139,61 @@ public class Utils {
         {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 压缩图片
+     * @param filePath
+     * @return
+     */
+    public static Bitmap getSmallBitmap(String filePath){
+        Log.v(TAG,"filepath = "+ filePath);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath,options);
+        //计算比例
+        options.inSampleSize = calculateInSampleSize(options,480,800);
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, options);
+    }
+
+    /**
+     * 计算比例
+     * @param options
+     * @param reqWidth
+     * @param reqHeight
+     * @return
+     */
+    public static int calculateInSampleSize(BitmapFactory.Options options,int reqWidth, int reqHeight){
+        int height = options.outHeight;
+        int width = options.outWidth;
+
+        int inSampleSize = 1;
+
+        if(height > reqHeight || width > reqWidth){
+            //如果高度或者宽度大于期望值 则压缩
+            int widthRatio = Math.round((float) width / (float)reqWidth );
+            int heightRatio = Math.round((float)height/(float)reqHeight);
+            inSampleSize = widthRatio > heightRatio ? heightRatio : widthRatio;
+        }
+        return inSampleSize;
+    }
+
+    /**
+     * 根据uri 获取路径
+     * @param context
+     * @param contentUri
+     * @return
+     */
+    public static String getRealPathFromURI(Context context,Uri contentUri) {
+        String res = null;
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
     }
 }

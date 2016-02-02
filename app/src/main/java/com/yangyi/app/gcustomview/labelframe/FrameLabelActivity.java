@@ -78,15 +78,12 @@ public class FrameLabelActivity extends AppCompatActivity{
         if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
             Log.e("uri", uri.toString());
-            ContentResolver cr = this.getContentResolver();
-            try {
-                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
-                ImageView imageView = (ImageView) findViewById(R.id.imgeview);
+//            ContentResolver cr = this.getContentResolver();
+            String pathfi = Utils.getRealPathFromURI(this, uri);
+//                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+            ImageView imageView = (ImageView) findViewById(R.id.imgeview);
                 /* 将Bitmap设定到ImageView */
-                imageView.setImageBitmap(bitmap);
-            } catch (FileNotFoundException e) {
-                Log.e("Exception", e.getMessage(),e);
-            }
+            imageView.setImageBitmap(Utils.getSmallBitmap(pathfi));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
